@@ -1,0 +1,9 @@
+description: Board Support Package for Lilygo TTGO-T-DISLAY
+dependencies:
+  idf: "~5.2"
+  espressif/button: "~3.2"
+  lvgl/lvgl: "~9.1"
+targets:
+- esp32
+url: https://github.com/gitplcc/ttgo_t_display
+version: 0.0.1
