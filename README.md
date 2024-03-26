@@ -16,3 +16,11 @@ Its another distinguishing feature is the embedded CH9102 USB bridge. This chip 
 hardware.
 
 Most of the ESP32 I/O pins are broken out to the board’s pin headers for easy access.
+
+## Installation
+
+TODO: write installation instructions
+
+## Getting started
+
+TODO: write installation instructions

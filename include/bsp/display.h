@@ -1,7 +1,9 @@
 /*
- * SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
  *
- * SPDX-License-Identifier: CC0-1.0
+ * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileContributor: 2024 Pedro Luis Castedo Cepeda
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -15,24 +17,24 @@
  */
 
 #pragma once
-#include "esp_lcd_types.h"
-#include "sdkconfig.h"
+#include <esp_err.h>
+#include <esp_lcd_types.h>
 
-/* LCD SPI interface */
-#define BSP_LCD_PIXEL_CLOCK_HZ (6 * 1000 * 1000)
-#define BSP_LCD_SPI_NUM (VSPI_HOST)
+/* LCD color formats */
+#define ESP_LCD_COLOR_FORMAT_RGB565    (1)
+#define ESP_LCD_COLOR_FORMAT_RGB888    (2)
 
-/* LCD format */
-#define BSP_LCD_H_RES (135)
-#define BSP_LCD_V_RES (240)
-
+/* LCD display color format */
+#define BSP_LCD_COLOR_FORMAT        (ESP_LCD_COLOR_FORMAT_RGB565)
 /* LCD display color bytes endianess */
-#define BSP_LCD_RGB_ENDIAN     (LCD_RGB_ENDIAN_BGR)
-
+#define BSP_LCD_BIGENDIAN           (1)
 /* LCD display color bits */
-#define BSP_LCD_BITS_PER_PIXEL_RGB444 (12)
-#define BSP_LCD_BITS_PER_PIXEL_RGB565 (16)
-#define BSP_LCD_BITS_PER_PIXEL_RGB666 (18)
+#define BSP_LCD_BITS_PER_PIXEL      (16)
+/* LCD display color space */
+#define BSP_LCD_COLOR_SPACE         (ESP_LCD_COLOR_SPACE_BGR)
+/* LCD definition */
+#define BSP_LCD_H_RES              (135)
+#define BSP_LCD_V_RES              (240)
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,6 +72,41 @@ typedef struct {
  *      - Else           esp_lcd failure
  */
 esp_err_t bsp_display_new(const bsp_display_config_t *config, esp_lcd_panel_handle_t *ret_panel, esp_lcd_panel_io_handle_t *ret_io);
+
+/**
+ * @brief Set display's brightness
+ *
+ * Brightness is controlled with PWM signal to a pin controlling backlight.
+ * Display must be already initialized by calling bsp_display_new()
+ *
+ * @param[in] brightness_percent Brightness in [%]
+ * @return
+ *      - ESP_OK                On success
+ *      - ESP_ERR_INVALID_ARG   Parameter error
+ */
+esp_err_t bsp_display_brightness_set(int brightness_percent);
+
+/**
+ * @brief Turn on display backlight
+ *
+ * Display must be already initialized by calling bsp_display_new()
+ *
+ * @return
+ *      - ESP_OK                On success
+ *      - ESP_ERR_INVALID_ARG   Parameter error
+ */
+esp_err_t bsp_display_backlight_on(void);
+
+/**
+ * @brief Turn off display backlight
+ *
+ * Display must be already initialized by calling bsp_display_new()
+ *
+ * @return
+ *      - ESP_OK                On success
+ *      - ESP_ERR_INVALID_ARG   Parameter error
+ */
+esp_err_t bsp_display_backlight_off(void);
 
 #ifdef __cplusplus
 }

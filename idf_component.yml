@@ -1,9 +1,21 @@
-description: Board Support Package for Lilygo TTGO-T-DISLAY
 dependencies:
-  idf: "~5.2"
-  espressif/button: "~3.2"
-  lvgl/lvgl: "~9.1"
+  idf:
+    version: "~5.2"
+  espressif/button:
+    version: "^3.2"
+  lvgl/lvgl:
+    version: "^8"
+    public: true
+  espressif/esp_lvgl_port:
+    version: "~2.0"
+description: "BSP for Lilygo TTGO-T-DISPLAY board"
+license: "Apache-2.0"
+maintainers:
+  - Pedro Luis Castedo Cepeda <pedroluis.castedo@upm.es>
+repository: "https://github.com/gitplcc/ttgo_t_display.git"
+tags:
+  - bsp
 targets:
-- esp32
-url: https://github.com/gitplcc/ttgo_t_display
-version: 0.0.1
+  - esp32
+url: "https://github.com/gitplcc/ttgo_t_display"
+version: "0.0.1"
