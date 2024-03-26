@@ -35,7 +35,6 @@ static const button_config_t bsp_button_config[BSP_BUTTON_NUM] = {{
 };
 
 static lv_disp_t *disp;
-static button_handle_t btn_array[BSP_BUTTON_NUM];
 static lv_indev_t *disp_indev = NULL;
 
 static esp_err_t bsp_display_brightness_init(void)
@@ -56,8 +55,10 @@ static esp_err_t bsp_display_brightness_init(void)
         .freq_hz = 5000,
         .clk_cfg = LEDC_AUTO_CLK};
 
+    ESP_LOGD(TAG, "BSP display brightness: initializing...");
     BSP_ERROR_CHECK_RETURN_ERR(ledc_timer_config(&LCD_backlight_timer));
     BSP_ERROR_CHECK_RETURN_ERR(ledc_channel_config(&LCD_backlight_channel));
+    ESP_LOGD(TAG, "BSP display brightness: initialized.");
 
     return ESP_OK;
 }
@@ -177,7 +178,7 @@ static lv_disp_t *bsp_display_lcd_init(const bsp_display_cfg_t *cfg)
 
 static lv_indev_t *bsp_display_indev_init(lv_disp_t *disp)
 {
-    BSP_ERROR_CHECK_RETURN_NULL(bsp_iot_button_create(btn_array, NULL, sizeof(btn_array) / sizeof(btn_array[0])));
+    assert(disp);
 
     const lvgl_port_nav_btns_cfg_t btns = {
         .disp = disp,
@@ -210,13 +211,20 @@ lv_disp_t *bsp_display_start(void)
 lv_disp_t *bsp_display_start_with_config(const bsp_display_cfg_t *cfg)
 {
     assert(cfg != NULL);
+
+    ESP_LOGD(TAG, "Starting display...");
+
+    ESP_LOGD(TAG, "Initializing LVGL port component...");
     BSP_ERROR_CHECK_RETURN_NULL(lvgl_port_init(&cfg->lvgl_port_cfg));
+    ESP_LOGD(TAG, "LVGL port component initialized.");
 
     BSP_ERROR_CHECK_RETURN_NULL(bsp_display_brightness_init());
 
     BSP_NULL_CHECK(disp = bsp_display_lcd_init(cfg), NULL);
 
     BSP_NULL_CHECK(disp_indev = bsp_display_indev_init(disp), NULL);
+
+    ESP_LOGD(TAG, "Display started.");
 
     return disp;
 }
@@ -233,23 +241,5 @@ void bsp_display_unlock(void)
 
 esp_err_t bsp_iot_button_create(button_handle_t btn_array[], int *btn_cnt, int btn_array_size)
 {
-    esp_err_t ret = ESP_OK;
-    if (!btn_array || (btn_array_size < BSP_BUTTON_NUM))
-        return ESP_ERR_INVALID_ARG;
-
-    if (btn_cnt)
-        *btn_cnt = 0;
-    for (int i = 0; i < BSP_BUTTON_NUM; i++)
-    {
-        btn_array[i] = iot_button_create(&bsp_button_config[i]);
-        if (!btn_array[i])
-        {
-            ret = ESP_FAIL;
-            break;
-        }
-
-        if (btn_cnt)
-            (*btn_cnt)++;
-    }
-    return ret;
+    return ESP_ERR_NOT_SUPPORTED;
 }
