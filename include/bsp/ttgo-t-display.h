@@ -58,8 +58,9 @@
 
 typedef enum
 {
-    BSP_BUTTON_CONFIG = 0,
-    BSP_BUTTON_MUTE,
+    BSP_BUTTON_NEXT = 0,
+    BSP_BUTTON_ENTER,
+    BSP_BUTTON_DUMMY,
     BSP_BUTTON_NUM
 } bsp_button_t;
 
