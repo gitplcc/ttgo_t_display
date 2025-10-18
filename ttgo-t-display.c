@@ -6,6 +6,8 @@
 #include <esp_lvgl_port.h>
 
 #include <esp_lcd_panel_vendor.h>
+#include <iot_button.h>
+#include <button_gpio.h>
 #include <driver/ledc.h>
 #include "driver/spi_master.h"
 #include <esp_log.h>
@@ -26,37 +28,19 @@
 
 static const char *TAG = "TTGO-T-DISPLAY";
 
-static const button_config_t bsp_button_config[BSP_BUTTON_NUM] =
+static const button_gpio_config_t bsp_button_config[BSP_BUTTON_NUM] =
 {
     {
-        .type = BUTTON_TYPE_GPIO,
-        .long_press_time = CONFIG_BUTTON_LONG_PRESS_TIME_MS,
-        .short_press_time = CONFIG_BUTTON_SHORT_PRESS_TIME_MS,
-        .gpio_button_config =
-        {
-            .gpio_num = BSP_BUTTON_GPIO0,
-            .active_level = 0,
-        }
+        .gpio_num = BSP_BUTTON_GPIO0,
+        .active_level = 0,
     },
     {
-        .type = BUTTON_TYPE_GPIO,
-        .long_press_time = CONFIG_BUTTON_LONG_PRESS_TIME_MS,
-        .short_press_time = CONFIG_BUTTON_SHORT_PRESS_TIME_MS,
-        .gpio_button_config =
-        {
-            .gpio_num = BSP_BUTTON_GPIO35,
-            .active_level = 0,
-        }
+        .gpio_num = BSP_BUTTON_GPIO35,
+        .active_level = 0,
     },
     {
-        .type = BUTTON_TYPE_GPIO,
-        .long_press_time = CONFIG_BUTTON_LONG_PRESS_TIME_MS,
-        .short_press_time = CONFIG_BUTTON_SHORT_PRESS_TIME_MS,
-        .gpio_button_config =
-        {
-            .gpio_num = GPIO_NUM_37,
-            .active_level = 0,
-        }
+        .gpio_num = GPIO_NUM_37,
+        .active_level = 0,
     },
 };
 
@@ -221,13 +205,19 @@ static lv_indev_t *bsp_display_indev_init(lv_disp_t *disp)
 {
     assert(disp);
 
+    const button_config_t btn_cfg = {0};
+    button_handle_t prev_btn_handle = NULL;
+    button_handle_t next_btn_handle = NULL;
+    button_handle_t enter_btn_handle = NULL;
+    iot_button_new_gpio_device(&btn_cfg, &bsp_button_config[BSP_BUTTON_DUMMY], &prev_btn_handle);
+    iot_button_new_gpio_device(&btn_cfg, &bsp_button_config[BSP_BUTTON_NEXT], &next_btn_handle);
+    iot_button_new_gpio_device(&btn_cfg, &bsp_button_config[BSP_BUTTON_ENTER], &enter_btn_handle);
+
     const lvgl_port_nav_btns_cfg_t btns = {
         .disp = disp,
-        .button_prev = &bsp_button_config[BSP_BUTTON_DUMMY],
-        .button_next = &bsp_button_config[BSP_BUTTON_NEXT],
-        .button_enter = &bsp_button_config[BSP_BUTTON_ENTER]
-    };
-
+        .button_prev = prev_btn_handle,
+        .button_next = next_btn_handle,
+        .button_enter = enter_btn_handle};
     /* Add buttons input (for selected screen) */
     return lvgl_port_add_navigation_buttons(&btns);
 }
