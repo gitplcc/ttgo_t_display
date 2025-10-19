@@ -47,6 +47,19 @@ static const button_gpio_config_t bsp_button_config[BSP_BUTTON_NUM] =
 static lv_disp_t *disp;
 static lv_indev_t *disp_indev = NULL;
 
+/** \addtogroup g04_display
+ *  @{
+ */
+
+ /**
+ * @brief Initialize display's brightness
+ *
+ * Brightness is controlled with PWM signal to a pin controlling backlight.
+ *
+ * @return
+ *      - ESP_OK                On success
+ *      - ESP_ERR_INVALID_ARG   Parameter error
+ */
 static esp_err_t bsp_display_brightness_init(void)
 {
     // Setup LEDC peripheral for PWM backlight control
@@ -72,6 +85,8 @@ static esp_err_t bsp_display_brightness_init(void)
 
     return ESP_OK;
 }
+
+/** @} */ // end of display
 
 esp_err_t bsp_display_brightness_set(int brightness_percent)
 {
